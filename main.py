@@ -13,14 +13,17 @@ screen = pg.display.set_mode(size)
 clock = pg.time.Clock()
 color = (100, 100, 200)
 platforms = pg.sprite.Group()
-for i in range(20):
-    platforms.add(Platform((width/40*i*2, height - 100)))
-p = Player((width/4, height/4))
+num = 4*8
+for i in range(4):
+    for j in range(8):
+        platforms.add(Platform((random.randint(50, width-50), j * height/8)))
+score = 0
+p = Player((width/2, height/6))
 pgroup = pg.sprite.Group()
 pgroup.add(p)
 
 def main():
-    global screen, color
+    global screen, color, score, num
     while True:
         clock.tick(60)
         for event in pg.event.get():
@@ -54,10 +57,16 @@ def main():
         if(p.rect.top <= height/4):
             for platform in platforms:
                 platform.rect.y += height/4 - p.rect.top
+            score += height/4 - p.rect.top
             p.rect.y += height/4 - p.rect.top
         if(p.rect.bottom >= height):
             for platform in platforms:
                 platform.rect.y -= p.vy
+        for platform in platforms:
+            if platform.rect.top >= height or platform.rect.bottom <= 0:
+                platform.kill()
+        for i in range(num - len(platforms)):
+            platforms.add(Platform((random.randint(50, width-50), 0)))
         platforms.update()
         p.update()
         screen.fill(color)
