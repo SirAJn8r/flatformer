@@ -11,7 +11,7 @@ class Platform(pygame.sprite.Sprite):
 
     def update(self):
         (width, height) = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-        if self.rect.bottom <= 0:
-            pass
-        if self.rect.top >= height:
-            pass
+        if self.rect.top <= 0:
+            self.kill()
+        if self.rect.bottom >= height:
+            self.kill()

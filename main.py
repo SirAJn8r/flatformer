@@ -1,6 +1,7 @@
 import pygame as pg
 from pygame.locals import *
 import sys
+import random
 
 from platform import *
 from player import *
@@ -13,7 +14,7 @@ clock = pg.time.Clock()
 color = (100, 100, 200)
 platforms = pg.sprite.Group()
 for i in range(20):
-    platforms.add(Platform((width/40*i*2, height*3/4-i*16)))
+    platforms.add(Platform((width/40*i*2, height - 100)))
 p = Player((width/4, height/4))
 pgroup = pg.sprite.Group()
 pgroup.add(p)
@@ -45,11 +46,18 @@ def main():
                     p.space = False
         p.coll = False
         if len(pg.sprite.spritecollide(p, platforms, False)) > 0:
-            p.coll = True
+            for i in pg.sprite.spritecollide(p, platforms, False):
+                if(p.rect.bottom <= i.rect.top + p.vy + 1):
+                    p.coll = True
+                    p.rect.bottom = i.rect.top + 1
+                    break
         if(p.rect.top <= height/4):
-            p.rect.y += height/4 - p.rect.top
             for platform in platforms:
                 platform.rect.y += height/4 - p.rect.top
+            p.rect.y += height/4 - p.rect.top
+        if(p.rect.bottom >= height):
+            for platform in platforms:
+                platform.rect.y -= p.vy
         platforms.update()
         p.update()
         screen.fill(color)

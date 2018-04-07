@@ -17,7 +17,8 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         (width, height) = (pg.display.Info().current_w, pg.display.Info().current_h)
-        self.vy += .3
+        if(self.coll == False):
+            self.vy += .3
         if self.a and not self.d:
             self.vx = -5
         elif self.d and not self.a:
