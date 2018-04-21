@@ -14,10 +14,15 @@ class Player(pg.sprite.Sprite):
         self.d = False
         self.space = False
         self.coll = False
+        self.q = False
+        self.e = False
+        self.limit = 14
+        self.dash = True
+        self.dashdist = 100
 
     def update(self):
         (width, height) = (pg.display.Info().current_w, pg.display.Info().current_h)
-        if(self.coll == False):
+        if self.coll == False and self.vy < self.limit:
             self.vy += .35
         if self.a and not self.d:
             self.vx = -5
@@ -26,10 +31,21 @@ class Player(pg.sprite.Sprite):
         else:
             self.vx = 0
         if self.coll:
+            self.dash = True
             if self.space:
                 self.vy = -9
             else:
                 self.vy = 0
+        if self.dash and self.q and not self.e:
+            self.rect.x -= self.dashdist
+            self.vy = 0
+            self.dash = False
+        elif self.dash and self.e and not self.q:
+            self.rect.x += self.dashdist
+            self.vy = 0
+            self.dash = False
+        if self.vy >= self.limit:
+            self.vy = self.limit
         self.rect.x += self.vx
         self.rect.y += self.vy
         if self.rect.centerx <= 0:

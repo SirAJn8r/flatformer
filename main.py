@@ -13,7 +13,7 @@ screen = pg.display.set_mode(size)
 clock = pg.time.Clock()
 color = (100, 100, 200)
 platforms = pg.sprite.Group()
-num = 4*8
+num = 32
 for i in range(4):
     for j in range(8):
         platforms.add(Platform((random.randint(50, width-50), j * height/8)))
@@ -40,6 +40,10 @@ def main():
                     p.d = True
                 if event.key == K_SPACE:
                     p.space = True
+                if event.key == K_q:
+                    p.q = True
+                if event.key == K_e:
+                    p.e = True
             if event.type == KEYUP:
                 if event.key == K_a:
                     p.a = False
@@ -47,6 +51,10 @@ def main():
                     p.d = False
                 if event.key == K_SPACE:
                     p.space = False
+                if event.key == K_q:
+                    p.q = False
+                if event.key == K_e:
+                    p.e = False
         p.coll = False
         if len(pg.sprite.spritecollide(p, platforms, False)) > 0:
             for i in pg.sprite.spritecollide(p, platforms, False):
@@ -54,7 +62,7 @@ def main():
                     p.coll = True
                     p.rect.bottom = i.rect.top + 1
                     break
-        if(p.rect.top <= height/4):
+        if(p.rect.top <= height/4 and num != 0):
             for platform in platforms:
                 platform.rect.y += height/4 - p.rect.top
             score += height/4 - p.rect.top
@@ -67,6 +75,12 @@ def main():
                 platform.kill()
         for i in range(num - len(platforms)):
             platforms.add(Platform((random.randint(50, width-50), 0)))
+        if(p.rect.top >= height):
+            if num != 0:
+                num = 0
+                for platform in platforms:
+                    platform.kill()
+            p.rect.y = -500
         platforms.update()
         p.update()
         screen.fill(color)
